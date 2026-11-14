@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vehicle Service BD - Bike &amp; Car Service Log</title>
+<meta name="description" content="Offline bilingual service & maintenance log for Bangladeshi bike and car owners: service history, costs, and next-service dues.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">&#9881;</span>
+    <div>
+      <h1 data-i18n="appTitle">Vehicle Service BD</h1>
+      <p class="subtitle" data-i18n="appSubtitle">Track services, costs and next dues for your bike or car</p>
+    </div>
+  </div>
+  <button id="langBtn" class="lang-btn" type="button">Bangla</button>
+</header>
+
+<nav class="tabs" aria-label="Sections">
+  <button type="button" class="tab active" data-tab="dashboard" data-i18n="tabDashboard">Dashboard</button>
+  <button type="button" class="tab" data-tab="vehicles" data-i18n="tabVehicles">Vehicles</button>
+  <button type="button" class="tab" data-tab="services" data-i18n="tabServices">Services</button>
+  <button type="button" class="tab" data-tab="data" data-i18n="tabData">Data</button>
+</nav>
+
+<main>
+  <!-- DASHBOARD -->
+  <section id="tab-dashboard" class="panel active" aria-label="Dashboard">
+    <div class="stats" id="statsGrid"></div>
+    <div class="card">
+      <h2 data-i18n="upcomingTitle">Upcoming service dues</h2>
+      <div id="duesList"></div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="perVehicleTitle">Spending per vehicle</h2>
+      <div id="perVehicleList"></div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="recentTitle">Recent services</h2>
+      <div id="recentList"></div>
+    </div>
+  </section>
+
+  <!-- VEHICLES -->
+  <section id="tab-vehicles" class="panel" aria-label="Vehicles">
+    <div class="card">
+      <h2 data-i18n="addVehicle">Add vehicle</h2>
+      <form id="vehicleForm" novalidate>
+        <div class="grid2">
+          <label><span data-i18n="vehicleName">Vehicle name *</span>
+            <input id="vName" type="text" maxlength="60" placeholder="Hero Splendor" autocomplete="off">
+            <small class="err" id="err-vName"></small>
+          </label>
+          <label><span data-i18n="vehicleType">Type *</span>
+            <select id="vType"></select>
+            <small class="err" id="err-vType"></small>
+          </label>
+          <label><span data-i18n="brand">Brand / Model</span>
+            <input id="vBrand" type="text" maxlength="60" placeholder="Hero" autocomplete="off">
+          </label>
+          <label><span data-i18n="plate">Number plate</span>
+            <input id="vPlate" type="text" maxlength="20" placeholder="DHAKA-123456" autocomplete="off">
+          </label>
+          <label><span data-i18n="purchaseDate">Purchase date</span>
+            <input id="vPurchase" type="date">
+            <small class="err" id="err-vPurchase"></small>
+          </label>
+          <label><span data-i18n="currentOdo">Current odometer (km) *</span>
+            <input id="vOdo" type="text" inputmode="numeric" placeholder="12000" autocomplete="off">
+            <small class="err" id="err-vOdo"></small>
+          </label>
+        </div>
+        <button type="submit" class="btn primary" data-i18n="saveVehicle">Save vehicle</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2 data-i18n="yourVehicles">Your vehicles</h2>
+      <div id="vehicleList"></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="tab-services" class="panel" aria-label="Services">
+    <div class="card">
+      <h2 data-i18n="addService">Add service</h2>
+      <p class="hint" id="noVehicleHint" hidden data-i18n="noVehicleHint">Add a vehicle first, then log services for it.</p>
+      <form id="serviceForm" novalidate>
+        <div class="grid2">
+          <label><span data-i18n="serviceVehicle">Vehicle *</span>
+            <select id="sVehicle"></select>
+            <small class="err" id="err-sVehicle"></small>
+          </label>
+          <label><span data-i18n="serviceDate">Date *</span>
+            <input id="sDate" type="date">
+            <small class="err" id="err-sDate"></small>
+          </label>
+          <label><span data-i18n="serviceOdo">Odometer (km) *</span>
+            <input id="sOdo" type="text" inputmode="numeric" placeholder="12500" autocomplete="off">
+            <small class="err" id="err-sOdo"></small>
+          </label>
+          <label><span data-i18n="serviceType">Service type *</span>
+            <select id="sType"></select>
+            <small class="err" id="err-sType"></small>
+          </label>
+          <label><span data-i18n="workshop">Workshop / garage</span>
+            <input id="sWorkshop" type="text" maxlength="80" placeholder="Rahim Motors" autocomplete="off">
+          </label>
+          <label><span data-i18n="cost">Cost (&#2547;) *</span>
+            <input id="sCost" type="text" inputmode="decimal" placeholder="850" autocomplete="off">
+            <small class="err" id="err-sCost"></small>
+          </label>
+          <label><span data-i18n="dueKm">Next service at (km)</span>
+            <input id="sDueKm" type="text" inputmode="numeric" placeholder="13500" autocomplete="off">
+            <small class="err" id="err-sDueKm"></small>
+          </label>
+          <label><span data-i18n="dueMonths">Next service in (months)</span>
+            <input id="sDueMonths" type="text" inputmode="numeric" placeholder="3" autocomplete="off">
+            <small class="err" id="err-sDueMonths"></small>
+          </label>
+        </div>
+        <label class="full"><span data-i18n="notes">Notes</span>
+          <input id="sNotes" type="text" maxlength="300" autocomplete="off">
+        </label>
+        <button type="submit" class="btn primary" data-i18n="saveService">Save service</button>
+      </form>
+    </div>
+    <div class="card print-area">
+      <div class="row-between">
+        <h2 data-i18n="historyTitle">Service history</h2>
+        <button type="button" class="btn" id="printBtn" data-i18n="printHistory">Print history</button>
+      </div>
+      <label class="filter"><span data-i18n="filterVehicle">Show</span>
+        <select id="historyFilter"></select>
+      </label>
+      <div class="table-wrap">
+        <table id="historyTable">
+          <thead><tr>
+            <th data-i18n="thDate">Date</th>
+            <th data-i18n="thVehicle">Vehicle</th>
+            <th data-i18n="thType">Type</th>
+            <th data-i18n="thOdo">Odo (km)</th>
+            <th data-i18n="thCost">Cost</th>
+            <th data-i18n="thDue">Next due</th>
+            <th><span class="sr-only">Actions</span></th>
+          </tr></thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="historyEmpty" hidden data-i18n="noServicesYet">No services yet - add your first service above.</p>
+    </div>
+  </section>
+
+  <!-- DATA -->
+  <section id="tab-data" class="panel" aria-label="Data">
+    <div class="card">
+      <h2 data-i18n="exportTitle">Export / Import</h2>
+      <p class="hint" data-i18n="exportHint">Export downloads a JSON file with all vehicles and services. Import replaces all current data.</p>
+      <div class="btn-row">
+        <button type="button" class="btn primary" id="exportBtn" data-i18n="exportBtn">Export JSON</button>
+      </div>
+      <label class="full"><span data-i18n="importLabel">Import JSON (paste or choose a file)</span>
+        <textarea id="importText" rows="4" placeholder='{"version": 1, "vehicles": [], "services": []}'></textarea>
+        <small class="err" id="err-import"></small>
+      </label>
+      <div class="btn-row">
+        <input type="file" id="importFile" accept=".json,application/json" hidden>
+        <button type="button" class="btn" id="importFileBtn" data-i18n="chooseFile">Choose file</button>
+        <button type="button" class="btn primary" id="importBtn" data-i18n="importBtn">Import JSON</button>
+      </div>
+      <p class="ok-msg" id="importOk" hidden data-i18n="importOk">Data imported successfully.</p>
+    </div>
+    <div class="card danger">
+      <h2 data-i18n="eraseTitle">Erase all data</h2>
+      <p class="hint" data-i18n="eraseHint">This permanently deletes every vehicle and service stored in this browser.</p>
+      <label class="full"><span data-i18n="eraseLabel">Type DELETE to confirm</span>
+        <input id="eraseText" type="text" autocomplete="off" placeholder="DELETE">
+      </label>
+      <button type="button" class="btn danger-btn" id="eraseBtn" disabled data-i18n="eraseBtn">Erase everything</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p data-i18n="footerNote">Offline personal tracker. Your data stays in this browser only. Service intervals are your own records - always follow your vehicle manual and your mechanic's advice.</p>
+  <p class="muted">Vehicle Service BD | v1.0 | 100% offline | no account | no network requests</p>
+</footer>
+
+<script src="js/core.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
